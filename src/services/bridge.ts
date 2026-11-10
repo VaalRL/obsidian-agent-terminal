@@ -41,7 +41,7 @@ interface NodePty {
     spawn(file: string, args: string[], options: object): PtyProcess;
 }
 
-function run(transport: BridgeTransport): void {
+async function run(transport: BridgeTransport): Promise<void> {
     // 從命令列參數獲取初始化資訊
     const shell = process.argv[2];
     const cwd = process.argv[3];
@@ -50,7 +50,8 @@ function run(transport: BridgeTransport): void {
 
     let pty: NodePty;
     try {
-        pty = require('node-pty') as NodePty;
+        // 動態載入：node-pty 不存在或與 runtime 不相容時，回報可讀的錯誤而不是讓 bridge 直接結束
+        pty = await import('node-pty');
     } catch (e) {
         transport.fail(`Failed to load node-pty. Make sure it is installed in the plugin folder and built for your Node.js version. (${errorMessage(e)})`);
         return;
@@ -94,5 +95,5 @@ const parentPort = (process as unknown as { parentPort?: ParentPortLike }).paren
 if (parentPort) {
     void receivePort(parentPort).then((port) => run(createPortTransport(port)));
 } else {
-    run(createStdioTransport());
+    void run(createStdioTransport());
 }

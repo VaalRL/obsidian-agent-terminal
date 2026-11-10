@@ -1,7 +1,7 @@
 import esbuild from "esbuild";
 import process from "process";
 import fs from "fs";
-import builtins from "builtin-modules";
+import { builtinModules } from "node:module";
 
 const banner =
 `/*
@@ -21,8 +21,8 @@ const commonConfig = {
     "obsidian",
     "electron",
     "node-pty",
-    "builtin-modules",
-    ...builtins
+    ...builtinModules,
+    ...builtinModules.map((name) => `node:${name}`)
   ],
 };
 

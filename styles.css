@@ -163,9 +163,11 @@
 .xterm-dim {
     /* Dim should not apply to background, so the opacity of the foreground color is applied
      * explicitly in the generated class and reset to 1 here */
-    opacity: 1 !important;
+    opacity: 1;
 }
 
+/* xterm.js 的底線樣式 (雙底線、波浪底線等，例如 Neovim 的錯誤提示)：多值的 text-decoration 會被 CSS 相容性檢查標為
+ * 「部分支援」，但 Obsidian 的 Chromium 可正常顯示，刻意保留 */
 .xterm-underline-1 { text-decoration: underline; }
 .xterm-underline-2 { text-decoration: double underline; }
 .xterm-underline-3 { text-decoration: wavy underline; }
@@ -271,9 +273,6 @@
     outline-offset: 2px;
 }
 
-.agent-terminal-input-error {
-    border-color: var(--text-error) !important;
-}
 
 .agent-terminal-warning {
     color: var(--text-error);
@@ -304,15 +303,6 @@
     height: 100%;
     padding: 8px; /* 內部微調邊距，但不影響外部填滿 */
     box-sizing: border-box;
-}
-
-.agent-terminal-content .xterm-viewport {
-    background-color: var(--background-primary) !important;
-}
-
-.agent-terminal-content .xterm-screen {
-    width: 100% !important;
-    height: 100% !important;
 }
 
 

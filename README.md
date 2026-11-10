@@ -57,7 +57,7 @@ Out of the box the menu has Claude Code and Antigravity CLI. In the settings, un
 
 ### Hotkeys
 
-Every quick command is an Obsidian command named **Agent Terminal: Run quick command: …**, including its options (for example `claude --continue --dangerously-skip-permissions`). Bind any of them in *Settings → Hotkeys*, and **Agent Terminal: Run default quick command** to whatever the bot button runs.
+Every quick command is an Obsidian command named **Agent Terminal: Run quick command: …**, including its options (for example `claude --continue --dangerously-skip-permissions`). Bind any of them in *Settings → Hotkeys*, and **Agent Terminal: Run default button action** to whatever the bot button runs.
 
 - A hotkey opens the terminal first if it is closed, then sends the command.
 - Hotkeys stay bound when you rename a quick command or edit its options; deleting it removes the command.

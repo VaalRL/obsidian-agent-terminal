@@ -1,4 +1,5 @@
 import { App, Platform, PluginSettingTab, requireApiVersion } from 'obsidian';
+import electron from 'electron';
 import type { Setting, SettingDefinitionGroup, SettingDefinitionItem, SettingDefinitionList, SettingDefinitionPage, TextComponent } from 'obsidian';
 import type AgentTerminalPlugin from '../main';
 import { EnvironmentService, ShellPreset } from '../services/EnvironmentService';
@@ -37,12 +38,7 @@ interface FolderDialog {
  * 取得 Electron 原生資料夾選擇對話框。Obsidian 沒有正式 API，取不到時回傳 null (不顯示「Browse…」按鈕)。
  */
 function getFolderDialog(): FolderDialog | null {
-    try {
-        const electron = require('electron') as { remote?: { dialog?: FolderDialog } } | undefined;
-        return electron?.remote?.dialog ?? null;
-    } catch {
-        return null;
-    }
+    return (electron as { remote?: { dialog?: FolderDialog } } | undefined)?.remote?.dialog ?? null;
 }
 
 /** 固定 id：Obsidian 指令 id 依此產生，改名不會失去快捷鍵 */
@@ -310,7 +306,7 @@ export class AgentTerminalSettingTab extends PluginSettingTab {
                     name: 'Button action',
                     desc: 'What the bot button does. With a default command it runs that command directly; '
                         + 'use the arrow next to it or right-click it for the full menu. '
-                        + 'The command "Run default quick command" can also be bound to a hotkey.',
+                        + 'The command "Run default button action" can also be bound to a hotkey.',
                     control: { type: 'dropdown', key: 'defaultQuickCommandId', options: actionOptions }
                 }
             ]

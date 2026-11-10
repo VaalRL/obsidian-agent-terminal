@@ -11,6 +11,7 @@ import { NativeInstaller } from '../services/NativeInstaller';
 import { detectObsidianCli, currentCliHost, prependPath, MIN_CLI_VERSION } from '../services/ObsidianCli';
 import { ConfirmModal } from './ConfirmModal';
 import { attachClipboardShortcuts } from './ClipboardShortcuts';
+import { terminalThemeFrom } from './terminalTheme';
 
 export const TERMINAL_VIEW_TYPE = 'agent-terminal-view';
 
@@ -25,6 +26,7 @@ export class TerminalView extends ItemView {
     private resizeTimeout: number | null = null;
     private initTimeout: number | null = null;
     private initId = 0;
+    private themeKey = '';
     private quickBtn: HTMLButtonElement | null = null;
     private quickMenuBtn: HTMLButtonElement | null = null;
     
@@ -122,11 +124,12 @@ export class TerminalView extends ItemView {
             cursorBlink: true,
             fontSize: 14,
             fontFamily: 'Consolas, "Courier New", monospace',
-            theme: {
-                background: 'transparent' // 讓它跟隨 Obsidian 背景
-            },
             allowProposedApi: true
         });
+        // 終端機使用 Obsidian 目前的背景與文字色 (見 terminalTheme)。容器顯示出來 (ResizeObserver、初始化) 時才讀得到顏色，
+        // 切換主題或深淺色時 (css-change) 再更新
+        const refreshTheme = () => this.refreshTheme(terminalContainer);
+        this.registerEvent(this.app.workspace.on('css-change', refreshTheme));
 
         // 鍵盤複製/貼上 (各平台快捷鍵見 ClipboardShortcuts)
         const platform = Platform.isMacOS ? 'mac' : Platform.isWin ? 'windows' : 'linux';
@@ -139,6 +142,7 @@ export class TerminalView extends ItemView {
         
         // Debounced ResizeObserver for efficient resize handling
         this.resizeObserver = new ResizeObserver(() => {
+            refreshTheme();
             if (this.resizeTimeout) window.clearTimeout(this.resizeTimeout);
             this.resizeTimeout = window.setTimeout(() => this.safeFit(), 50);
         });
@@ -146,10 +150,20 @@ export class TerminalView extends ItemView {
 
         // 延遲一下確保 DOM 已經準備好再進行第一次 fit
         this.initTimeout = window.setTimeout(() => {
+            refreshTheme();
             this.safeFit();
             void this.initPty();
             this.initTimeout = null;
         }, 100);
+    }
+
+    /** 依容器目前的顏色更新終端機主題；顏色沒變時不重設 (避免多餘的重繪) */
+    private refreshTheme(container: HTMLElement) {
+        const theme = terminalThemeFrom(getComputedStyle(container));
+        const key = JSON.stringify(theme);
+        if (key === this.themeKey) return;
+        this.themeKey = key;
+        this.terminal.options.theme = theme;
     }
 
     private async initPty() {

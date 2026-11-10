@@ -71,8 +71,9 @@ export default class AgentTerminalPlugin extends Plugin {
         this.registerQuickCommands();
 
         this.addCommand({
-            id: 'run-default-quick-command',
-            name: 'Run default quick command',
+            // 對應設定頁的「Button action」；審查規則不建議在指令 id / 名稱中加上 "command"
+            id: 'run-default-button-action',
+            name: 'Run default button action',
             callback: () => {
                 void this.terminalManager.runDefaultQuickCommand().then((result) => {
                     if (result === 'no-default') new Notice('Choose a default quick command in the Agent Terminal settings first.');

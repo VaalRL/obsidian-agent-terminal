@@ -79,7 +79,7 @@ export class TerminalManager {
         return (await view.sendText(text + '\r')) ? 'sent' : 'unavailable';
     }
 
-    /** 執行按鈕的預設 quick command (Obsidian 指令「Run default quick command」) */
+    /** 執行按鈕的預設 quick command (Obsidian 指令「Run default button action」) */
     runDefaultQuickCommand(): Promise<QuickCommandResult> {
         const quickCommand = resolveDefaultQuickCommand(this.settings);
         return quickCommand ? this.runQuickCommand(quickCommand.id) : Promise.resolve('no-default');

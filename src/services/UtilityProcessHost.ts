@@ -6,6 +6,7 @@
  * 所以只用來建立連線：開一個 MessageChannelMain，一端交給 bridge，另一端送到本視窗，
  * 之後的輸入輸出都直接走 MessagePort。
  */
+import electron from 'electron';
 
 /** 渲染端 (DOM) 的 MessagePort；utility process 結束時觸發 'close' */
 export interface BridgePort {
@@ -47,11 +48,7 @@ export interface ElectronLike {
 }
 
 function loadElectron(): ElectronLike | null {
-    try {
-        return require('electron') as ElectronLike;
-    } catch {
-        return null;
-    }
+    return (electron as ElectronLike | undefined) ?? null;
 }
 
 let nextChannelId = 0;
