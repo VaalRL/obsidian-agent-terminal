@@ -1,0 +1,106 @@
+# 推送版本 tag (例如 0.2.0，需與 manifest.json 的 version 相同) 時建立 GitHub release 草稿：
+#   - main.js / manifest.json / styles.css：Obsidian 社群外掛商店安裝的檔案
+#   - node-pty-<platform>-<arch>.json.gz：外掛第一次使用時下載的原生模組 (sha256 已內嵌在 main.js)
+# main.js 內嵌的 sha256 必須與同一次執行產生的下載檔一致，因此所有檔案都在這個 workflow 一起產生。
+name: Release
+
+on:
+  push:
+    tags: ["*.*.*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  native-linux:
+    # node-pty 沒有提供 Linux prebuilds，需自行編譯；
+    # 使用 bullseye (glibc 2.31) 容器編譯，讓較舊的發行版也能載入
+    strategy:
+      matrix:
+        include:
+          - arch: x64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    container: node:22-bullseye
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies (builds node-pty from source)
+        run: npm ci
+      - name: Package node-pty
+        run: node scripts/package-native.mjs --targets linux-${{ matrix.arch }} --out dist/native-linux-${{ matrix.arch }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-linux-${{ matrix.arch }}
+          path: dist/native-linux-${{ matrix.arch }}
+          if-no-files-found: error
+
+  release:
+    needs: native-linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          check-latest: true
+          cache: npm
+
+      - name: Check tag matches manifest.json version
+        if: github.event_name == 'push'
+        run: |
+          version=$(node -p "require('./manifest.json').version")
+          if [ "$version" != "${GITHUB_REF_NAME}" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match manifest.json version ${version}"
+            exit 1
+          fi
+          # Obsidian 依 versions.json 決定舊版 Obsidian 能安裝哪個外掛版本
+          min=$(node -p "require('./manifest.json').minAppVersion")
+          listed=$(node -p "require('./versions.json')['${version}'] || ''")
+          if [ "$listed" != "$min" ]; then
+            echo "versions.json must map ${version} to minAppVersion ${min} (found '${listed}')"
+            exit 1
+          fi
+
+      # Windows / macOS 使用 node-pty npm 套件附帶的 prebuilds，不需要編譯
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: native-linux-*
+          path: artifacts
+
+      - name: Package node-pty for all platforms
+        run: |
+          node scripts/package-native.mjs --merge artifacts/native-linux-x64,artifacts/native-linux-arm64
+          node scripts/package-native.mjs --targets win32-x64,win32-arm64,darwin-x64,darwin-arm64
+
+      - name: Verify every platform is packaged
+        run: |
+          node -e '
+            const m = require("./dist/native/native-manifest.json");
+            const required = ["win32-x64", "win32-arm64", "darwin-x64", "darwin-arm64", "linux-x64", "linux-arm64"];
+            const missing = required.filter((t) => !m.assets[t]);
+            if (missing.length) { console.error("Missing native bundles:", missing.join(", ")); process.exit(1); }
+            console.log("All platforms packaged:", Object.keys(m.assets).join(", "));
+          '
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Test
+        run: npm test
+
+      - name: Build (embeds the native manifest)
+        run: npm run build
+
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag=$(node -p "require('./manifest.json').version")
+          gh release create "$tag" --draft --title "$tag" --generate-notes \
+            main.js manifest.json styles.css dist/native/*.json.gz

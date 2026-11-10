@@ -1,0 +1,47 @@
+{
+  "name": "obsidian-agent-terminal",
+  "version": "0.1.0",
+  "description": "Run AI coding agents (Claude Code, Codex, opencode, Antigravity CLI) in a terminal inside Obsidian.",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "node esbuild.config.mjs production",
+    "package:native": "node scripts/package-native.mjs",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "obsidian",
+    "obsidian-plugin",
+    "terminal",
+    "ai-agent",
+    "claude-code",
+    "codex",
+    "opencode",
+    "xterm",
+    "node-pty"
+  ],
+  "author": "VaalRL",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VaalRL/obsidian-agent-terminal.git"
+  },
+  "homepage": "https://vaalrl.github.io/obsidian-agent-terminal/",
+  "bugs": {
+    "url": "https://github.com/VaalRL/obsidian-agent-terminal/issues"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "builtin-modules": "^5.0.0",
+    "esbuild": "^0.28.0",
+    "obsidian": "^1.14.4",
+    "obsidian-plugin-cli": "^0.9.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "dependencies": {
+    "node-pty": "^1.0.0",
+    "xterm": "^5.0.0",
+    "xterm-addon-fit": "^0.8.0"
+  }
+}

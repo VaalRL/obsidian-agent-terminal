@@ -1,0 +1,11 @@
+{
+  "id": "agent-terminal",
+  "name": "Agent Terminal",
+  "version": "0.1.0",
+  "minAppVersion": "1.13.1",
+  "description": "Run AI coding agents such as Claude Code, Codex and opencode in a terminal inside your vault, with one-click launch and shared instructions.",
+  "author": "VaalRL",
+  "authorUrl": "https://github.com/VaalRL",
+  "fundingUrl": "https://www.buymeacoffee.com/whoami885",
+  "isDesktopOnly": true
+}

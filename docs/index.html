@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Agent Terminal</title>
+    <meta name="description" content="Run Claude Code, Codex CLI, opencode and other AI coding agents in a terminal inside Obsidian, with one-click launch and shared instructions.">
+    <link rel="alternate" hreflang="zh-Hant-TW" href="zh-TW/">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2317151f'/%3E%3Ctext x='6' y='22' font-family='monospace' font-size='16' font-weight='700' fill='%23b7a4ff'%3E%3E_%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header class="site-header">
+    <div class="wrap">
+        <a class="brand" href="./"><span class="brand-mark">&gt;_</span>Agent Terminal</a>
+        <nav class="site-nav">
+            <a class="optional" href="#agents">Agents</a>
+            <a class="optional" href="#install">Install</a>
+            <a href="zh-TW/" lang="zh-Hant-TW">繁體中文</a>
+            <a href="https://github.com/VaalRL/obsidian-agent-terminal">GitHub</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="hero">
+        <div class="wrap">
+            <div>
+                <span class="eyebrow">Obsidian plugin · desktop</span>
+                <h1>Your AI agents, inside your vault.</h1>
+                <p class="lead">Run Claude Code, Codex CLI, opencode or Antigravity CLI in a real terminal next to your notes. Start them with one click, give them one set of instructions, and let them drive Obsidian.</p>
+                <div class="actions">
+                    <a class="button primary" href="#install">Install</a>
+                    <a class="button" href="https://github.com/VaalRL/obsidian-agent-terminal#readme">Read the docs</a>
+                </div>
+            </div>
+            <div class="terminal" role="img" aria-label="A terminal in Obsidian with the quick command menu open">
+                <div class="terminal-bar">
+                    <span>~/Notes</span>
+                    <span class="terminal-buttons"><span class="active">🤖 ▾</span><span>✨</span><span>⟳</span></span>
+                </div>
+                <div class="terminal-body">
+                    <div class="menu" aria-hidden="true">
+                        <div>Claude Code</div>
+                        <div class="selected"><span>✓ Claude Code: continue last session</span></div>
+                        <hr>
+                        <div>Codex CLI</div>
+                        <div><span>Codex CLI: resume last session</span></div>
+                        <hr>
+                        <div>opencode</div>
+                        <div><span>opencode: auto-approve permissions</span><span class="shield">⛨</span></div>
+                    </div>
+                    <p><span class="prompt">~/Notes $</span> claude --continue</p>
+                    <p class="dim">Resuming session in ~/Notes…</p>
+                    <p>&nbsp;</p>
+                    <p><span class="dim">&gt;</span> open today's daily note and add the meeting summary</p>
+                    <p class="dim">● obsidian daily vault="Notes"</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section>
+        <div class="wrap">
+            <div class="cards">
+                <div class="card">
+                    <span class="icon">🤖</span>
+                    <h3>One-click launch</h3>
+                    <p>Start an agent, continue the last session or skip permission prompts from a button, the command palette or a hotkey. Commands are only typed while the shell is idle.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">✨</span>
+                    <h3>One AI core</h3>
+                    <p>Write your vault rules once. They are linked to <code>CLAUDE.md</code>, <code>AGENTS.md</code> and <code>GEMINI.md</code>, and shared skills appear in every agent.</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🧭</span>
+                    <h3>Agents drive Obsidian</h3>
+                    <p>Through the official Obsidian CLI, agents can open today's daily note, switch view modes or run any command.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="agents">
+        <div class="wrap">
+            <h2>Presets for your agents</h2>
+            <p class="section-lead">Every preset is plain text you can edit. Claude Code and Antigravity CLI are in the menu out of the box; add Codex CLI and opencode with one button in the settings.</p>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr><th></th><th>Claude Code</th><th>Codex CLI</th><th>opencode</th><th>Antigravity CLI</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><th>New session</th><td><code>claude</code></td><td><code>codex</code></td><td><code>opencode</code></td><td><code>agy</code></td></tr>
+                        <tr><th>Continue</th><td><code>claude --continue</code></td><td><code>codex resume --last</code></td><td><code>opencode --continue</code></td><td><code>agy --continue</code></td></tr>
+                        <tr><th>Skip prompts ⛨</th><td><code>--dangerously-skip-permissions</code></td><td><code>--dangerously-bypass-approvals-and-sandbox</code></td><td><code>--auto</code></td><td><code>--dangerously-skip-permissions</code></td></tr>
+                        <tr><th>Instructions</th><td><code>CLAUDE.md</code></td><td><code>AGENTS.md</code></td><td><code>AGENTS.md</code></td><td><code>GEMINI.md</code>, <code>AGENTS.md</code></td></tr>
+                        <tr><th>Skills</th><td><code>.claude/skills</code></td><td><code>.agents/skills</code></td><td><code>.agents/skills</code>, <code>.claude/skills</code></td><td><code>.agents/skills</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="note"><strong>⛨ Use with care:</strong> commands that skip permission prompts let the agent run commands and edit files without asking. They are marked in the menu and in the settings.</p>
+        </div>
+    </section>
+
+    <section id="ollama">
+        <div class="wrap two-col wide-right">
+            <div>
+                <h2>Local and cloud models with Ollama</h2>
+                <p class="section-lead">Add the Ollama presets to start Claude Code, Codex CLI or opencode with a local or Ollama cloud model. The agent keeps its tools: it still edits notes, runs commands and uses the shared skills.</p>
+                <ul class="plain">
+                    <li>Choose a model that supports tools and set a context length of 64k or more. Plain <code>ollama run</code> only chats.</li>
+                    <li>You pick the model the first time; later launches reuse it.</li>
+                    <li>Models ending in <code>:cloud</code> run on ollama.com.</li>
+                </ul>
+            </div>
+            <div class="table-scroll">
+                <table class="commands-table">
+                    <thead><tr><th></th><th>New session</th><th>Continue</th></tr></thead>
+                    <tbody>
+                        <tr><th>Claude Code</th><td><code><span>ollama</span> <span>launch</span> <span>claude</span></code></td><td><code><span>ollama</span> <span>launch</span> <span>claude</span> <span>--</span> <span>--continue</span></code></td></tr>
+                        <tr><th>Codex CLI</th><td><code><span>ollama</span> <span>launch</span> <span>codex</span></code></td><td><code><span>ollama</span> <span>launch</span> <span>codex</span> <span>--</span> <span>resume</span> <span>--last</span></code></td></tr>
+                        <tr><th>opencode</th><td><code><span>ollama</span> <span>launch</span> <span>opencode</span></code></td><td><code><span>ollama</span> <span>launch</span> <span>opencode</span> <span>--</span> <span>--continue</span></code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="wrap two-col wide-right">
+            <div>
+                <h2>Let agents control Obsidian</h2>
+                <p class="section-lead">Turn on <em>Settings → General → Command line interface</em> and run <strong>Bootstrap AI core</strong>. The included <code>obsidian-cli</code> skill teaches every agent how to use it, and to ask before anything destructive.</p>
+            </div>
+            <div class="table-scroll">
+                <table>
+                    <thead><tr><th>Ask the agent to…</th><th>It runs</th></tr></thead>
+                    <tbody>
+                        <tr><td>Open today's daily note</td><td><code>obsidian daily</code></td></tr>
+                        <tr><td>Toggle reading view</td><td><code>obsidian command id=markdown:toggle-preview</code></td></tr>
+                        <tr><td>Toggle source mode</td><td><code>obsidian command id=editor:toggle-source</code></td></tr>
+                        <tr><td>Run any command</td><td><code>obsidian command id=&lt;id&gt;</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="install">
+        <div class="wrap two-col">
+            <div>
+                <h2>Install</h2>
+                <ol class="steps">
+                    <li>In Obsidian, open <em>Settings → Community plugins → Browse</em> and search for “Agent Terminal” (once listed). Or download <code>main.js</code>, <code>manifest.json</code> and <code>styles.css</code> from the <a href="https://github.com/VaalRL/obsidian-agent-terminal/releases/latest">latest release</a> into <code>.obsidian/plugins/agent-terminal/</code>.</li>
+                    <li>Enable the plugin and open a terminal from the ribbon or the command palette.</li>
+                    <li>Allow the one-time download of the terminal engine, then press 🤖 and pick an agent.</li>
+                </ol>
+            </div>
+            <div>
+                <h2>Good to know</h2>
+                <ul class="plain">
+                    <li>Desktop only: Windows, macOS and Linux (x64, arm64), Obsidian 1.13.1 or later.</li>
+                    <li>Install the agents themselves as usual; Agent Terminal starts them.</li>
+                    <li>The only network request is the terminal engine (node-pty, 50–800 KB), downloaded once after you agree and verified with SHA-256. No data is collected.</li>
+                    <li>Before your own <code>CLAUDE.md</code> or skills, or an edited <code>ai-core.md</code>, are replaced, a dialog lists them and asks first. Each one is kept as <code>.bak</code>, never deleted, and nothing changes if you cancel.</li>
+                    <li>Open source under the MIT license.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <div class="wrap">
+        <span>Agent Terminal · MIT License</span>
+        <span><a href="https://github.com/VaalRL/obsidian-agent-terminal">GitHub</a> · <a href="https://github.com/VaalRL/obsidian-agent-terminal/issues">Report an issue</a> · <a href="zh-TW/" lang="zh-Hant-TW">繁體中文</a></span>
+    </div>
+</footer>
+</body>
+</html>

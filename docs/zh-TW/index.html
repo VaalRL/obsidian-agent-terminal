@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Agent Terminal</title>
+    <meta name="description" content="在 Obsidian 裡的終端機執行 Claude Code、Codex CLI、opencode 等 AI coding agent：一鍵啟動、共用指示，還能讓 agent 操作 Obsidian。">
+    <link rel="alternate" hreflang="en" href="../">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2317151f'/%3E%3Ctext x='6' y='22' font-family='monospace' font-size='16' font-weight='700' fill='%23b7a4ff'%3E%3E_%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<header class="site-header">
+    <div class="wrap">
+        <a class="brand" href="./"><span class="brand-mark">&gt;_</span>Agent Terminal</a>
+        <nav class="site-nav">
+            <a class="optional" href="#agents">支援的 agent</a>
+            <a class="optional" href="#install">安裝</a>
+            <a href="../" lang="en">English</a>
+            <a href="https://github.com/VaalRL/obsidian-agent-terminal">GitHub</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="hero">
+        <div class="wrap">
+            <div>
+                <span class="eyebrow">Obsidian 外掛 · 桌面版</span>
+                <h1>把 AI agent 帶進你的筆記庫。</h1>
+                <p class="lead">在筆記旁邊的真正終端機裡執行 Claude Code、Codex CLI、opencode 或 Antigravity CLI。一鍵啟動、所有 agent 共用一份指示，還能讓 agent 直接操作 Obsidian。</p>
+                <div class="actions">
+                    <a class="button primary" href="#install">安裝</a>
+                    <a class="button" href="https://github.com/VaalRL/obsidian-agent-terminal#readme">完整說明（英文）</a>
+                </div>
+            </div>
+            <div class="terminal" role="img" aria-label="Obsidian 中的終端機，開啟了快速指令選單">
+                <div class="terminal-bar">
+                    <span>~/Notes</span>
+                    <span class="terminal-buttons"><span class="active">🤖 ▾</span><span>✨</span><span>⟳</span></span>
+                </div>
+                <div class="terminal-body">
+                    <div class="menu" aria-hidden="true">
+                        <div>Claude Code</div>
+                        <div class="selected"><span>✓ Claude Code: continue last session</span></div>
+                        <hr>
+                        <div>Codex CLI</div>
+                        <div><span>Codex CLI: resume last session</span></div>
+                        <hr>
+                        <div>opencode</div>
+                        <div><span>opencode: auto-approve permissions</span><span class="shield">⛨</span></div>
+                    </div>
+                    <p><span class="prompt">~/Notes $</span> claude --continue</p>
+                    <p class="dim">Resuming session in ~/Notes…</p>
+                    <p>&nbsp;</p>
+                    <p><span class="dim">&gt;</span> 打開今天的日記，加上會議摘要</p>
+                    <p class="dim">● obsidian daily vault="Notes"</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section>
+        <div class="wrap">
+            <div class="cards">
+                <div class="card">
+                    <span class="icon">🤖</span>
+                    <h3>一鍵啟動</h3>
+                    <p>從按鈕、命令面板或快捷鍵啟動 agent、繼續上次的對話或跳過權限確認。只在 shell 等待輸入時才送出指令，不會打進執行中的程式。</p>
+                </div>
+                <div class="card">
+                    <span class="icon">✨</span>
+                    <h3>一份 AI 核心</h3>
+                    <p>筆記庫的規則只寫一次，自動連結成 <code>CLAUDE.md</code>、<code>AGENTS.md</code>、<code>GEMINI.md</code>，共用的 skills 也會出現在每個 agent 裡。</p>
+                </div>
+                <div class="card">
+                    <span class="icon">🧭</span>
+                    <h3>讓 agent 操作 Obsidian</h3>
+                    <p>透過 Obsidian 官方 CLI，agent 可以開啟今日筆記、切換檢視模式，或執行任何指令。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="agents">
+        <div class="wrap">
+            <h2>各 agent 的預設指令</h2>
+            <p class="section-lead">每個預設都是可以自由修改的文字。選單預設包含 Claude Code 與 Antigravity CLI；Codex CLI 與 opencode 在設定頁按一下就能加入。</p>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr><th></th><th>Claude Code</th><th>Codex CLI</th><th>opencode</th><th>Antigravity CLI</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><th>新對話</th><td><code>claude</code></td><td><code>codex</code></td><td><code>opencode</code></td><td><code>agy</code></td></tr>
+                        <tr><th>繼續上次</th><td><code>claude --continue</code></td><td><code>codex resume --last</code></td><td><code>opencode --continue</code></td><td><code>agy --continue</code></td></tr>
+                        <tr><th>跳過權限確認 ⛨</th><td><code>--dangerously-skip-permissions</code></td><td><code>--dangerously-bypass-approvals-and-sandbox</code></td><td><code>--auto</code></td><td><code>--dangerously-skip-permissions</code></td></tr>
+                        <tr><th>指示檔</th><td><code>CLAUDE.md</code></td><td><code>AGENTS.md</code></td><td><code>AGENTS.md</code></td><td><code>GEMINI.md</code>、<code>AGENTS.md</code></td></tr>
+                        <tr><th>Skills</th><td><code>.claude/skills</code></td><td><code>.agents/skills</code></td><td><code>.agents/skills</code>、<code>.claude/skills</code></td><td><code>.agents/skills</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="note"><strong>⛨ 請小心使用：</strong>跳過權限確認的指令會讓 agent 不經詢問就執行指令、修改檔案（Codex 的版本還會關閉沙箱）。選單與設定頁都會特別標示。</p>
+        </div>
+    </section>
+
+    <section id="ollama">
+        <div class="wrap two-col wide-right">
+            <div>
+                <h2>用 Ollama 跑本機或雲端模型</h2>
+                <p class="section-lead">加入 Ollama 預設後，可以讓 Claude Code、Codex CLI 或 opencode 改用本機或 Ollama 雲端模型。agent 的工具照樣能用：一樣能修改筆記、執行指令、使用共用的 skills。</p>
+                <ul class="plain">
+                    <li>請選支援工具（tools）的模型，context 長度設為 64k 以上。直接用 <code>ollama run</code> 只能聊天。</li>
+                    <li>第一次啟動時選模型，之後會沿用。</li>
+                    <li>名稱以 <code>:cloud</code> 結尾的模型在 ollama.com 上執行，內容會離開你的電腦。</li>
+                </ul>
+            </div>
+            <div class="table-scroll">
+                <table class="commands-table">
+                    <thead><tr><th></th><th>新對話</th><th>繼續上次</th></tr></thead>
+                    <tbody>
+                        <tr><th>Claude Code</th><td><code><span>ollama</span> <span>launch</span> <span>claude</span></code></td><td><code><span>ollama</span> <span>launch</span> <span>claude</span> <span>--</span> <span>--continue</span></code></td></tr>
+                        <tr><th>Codex CLI</th><td><code><span>ollama</span> <span>launch</span> <span>codex</span></code></td><td><code><span>ollama</span> <span>launch</span> <span>codex</span> <span>--</span> <span>resume</span> <span>--last</span></code></td></tr>
+                        <tr><th>opencode</th><td><code><span>ollama</span> <span>launch</span> <span>opencode</span></code></td><td><code><span>ollama</span> <span>launch</span> <span>opencode</span> <span>--</span> <span>--continue</span></code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="wrap two-col wide-right">
+            <div>
+                <h2>讓 agent 操作 Obsidian</h2>
+                <p class="section-lead">在<em>設定 → 一般 → 命令列介面</em>開啟並註冊後，執行 <strong>Bootstrap AI core</strong>。內附的 <code>obsidian-cli</code> skill 會教每個 agent 怎麼使用，並要求刪除、覆寫等動作前先詢問你。</p>
+            </div>
+            <div class="table-scroll">
+                <table>
+                    <thead><tr><th>請 agent…</th><th>它會執行</th></tr></thead>
+                    <tbody>
+                        <tr><td>開啟今日筆記</td><td><code>obsidian daily</code></td></tr>
+                        <tr><td>切換閱讀檢視</td><td><code>obsidian command id=markdown:toggle-preview</code></td></tr>
+                        <tr><td>切換原始碼模式</td><td><code>obsidian command id=editor:toggle-source</code></td></tr>
+                        <tr><td>執行任何指令</td><td><code>obsidian command id=&lt;id&gt;</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section id="install">
+        <div class="wrap two-col">
+            <div>
+                <h2>安裝</h2>
+                <ol class="steps">
+                    <li>在 Obsidian 開啟<em>設定 → 第三方外掛 → 瀏覽</em>，搜尋「Agent Terminal」（上架後）。或從<a href="https://github.com/VaalRL/obsidian-agent-terminal/releases/latest">最新版本</a>下載 <code>main.js</code>、<code>manifest.json</code>、<code>styles.css</code>，放到 <code>.obsidian/plugins/agent-terminal/</code>。</li>
+                    <li>啟用外掛，從左側功能列或命令面板開啟終端機。</li>
+                    <li>同意一次性下載終端機引擎，然後按 🤖 選擇 agent。</li>
+                </ol>
+            </div>
+            <div>
+                <h2>使用前須知</h2>
+                <ul class="plain">
+                    <li>僅支援桌面版：Windows、macOS、Linux（x64、arm64），Obsidian 1.13.1 以上。</li>
+                    <li>agent 本身請照各自的方式安裝，Agent Terminal 負責啟動它們。</li>
+                    <li>唯一的網路連線是下載終端機引擎（node-pty，50–800 KB）：經你同意後只下載一次，並以 SHA-256 驗證。不收集任何資料。</li>
+                    <li>取代你自己的 <code>CLAUDE.md</code>、skills 或編輯過的 <code>ai-core.md</code> 之前，會先跳出視窗列出這些檔案並詢問你。每個檔案都會保留為 <code>.bak</code>，絕不刪除；按取消則不做任何變更。</li>
+                    <li>以 MIT 授權開放原始碼。</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <div class="wrap">
+        <span>Agent Terminal · MIT 授權</span>
+        <span><a href="https://github.com/VaalRL/obsidian-agent-terminal">GitHub</a> · <a href="https://github.com/VaalRL/obsidian-agent-terminal/issues">回報問題</a> · <a href="../" lang="en">English</a></span>
+    </div>
+</footer>
+</body>
+</html>
