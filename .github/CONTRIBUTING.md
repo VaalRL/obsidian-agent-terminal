@@ -26,8 +26,10 @@ To try the plugin, link or copy the repository into `<test vault>/.obsidian/plug
 ## Releasing
 
 1. Update `version` in `manifest.json` and `package.json`, add the version to `versions.json` (mapped to `minAppVersion`), commit, and push a tag with the same version, for example `git tag 0.2.0 && git push origin 0.2.0`. The tag must not start with `v`: if you use `npm version`, run it as `npm version 0.2.0 --tag-version-prefix=""`, because npm adds `v` by default and Obsidian rejects such a release.
-2. The **Release** workflow builds node-pty for Linux (x64, arm64), packages the prebuilt Windows and macOS binaries, runs the tests, builds `main.js` with the matching checksums and creates a **draft** GitHub release with all files.
+2. The **Release** workflow builds node-pty for Linux (x64, arm64), packages the prebuilt Windows and macOS binaries, runs the tests, builds `main.js` with the matching checksums and creates a **draft** GitHub release with all files. Instead of pushing the tag you can also start it from *Actions → Release → Run workflow*; publishing that draft then creates the tag.
 3. Review the draft and publish it.
+
+The workflow does nothing when the version already has a release, draft or published, so publishing a draft never produces a second one. To build a version again, delete its release first.
 
 To package locally, `npm run package:native` writes the bundles and `native-manifest.json` to `dist/native/`; a following `npm run build` embeds that manifest.
 

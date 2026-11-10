@@ -2,6 +2,8 @@
 #   - main.js / manifest.json / styles.css：Obsidian 社群外掛商店安裝的檔案
 #   - node-pty-<platform>-<arch>.json.gz：外掛第一次使用時下載的原生模組 (sha256 已內嵌在 main.js)
 # main.js 內嵌的 sha256 必須與同一次執行產生的下載檔一致，因此所有檔案都在這個 workflow 一起產生。
+# 推送 tag 或手動 Run workflow 皆可；該版本已有 release (草稿或已發布) 時整個流程跳過，
+# 例如以 Run workflow 產生的草稿在 Publish 時建立 tag，又觸發一次本 workflow。
 name: Release
 
 on:
@@ -16,7 +18,29 @@ permissions:
   attestations: write
 
 jobs:
+  check:
+    runs-on: ubuntu-24.04
+    outputs:
+      exists: ${{ steps.check.outputs.exists }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: check
+        name: Skip if this version already has a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(node -p "require('./manifest.json').version")
+          # 草稿與已發布的 release 都會列出 tag_name
+          if gh api "repos/${GITHUB_REPOSITORY}/releases" --paginate --jq '.[].tag_name' | grep -qxF "$version"; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::A release for ${version} already exists (draft or published), so nothing is built. Delete it first to build again."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
   native-linux:
+    needs: check
+    if: needs.check.outputs.exists == 'false'
     # node-pty 沒有提供 Linux prebuilds，需自行編譯；
     # 使用 bullseye (glibc 2.31) 容器編譯，讓較舊的發行版也能載入
     strategy:
@@ -41,7 +65,8 @@ jobs:
           if-no-files-found: error
 
   release:
-    needs: native-linux
+    needs: [check, native-linux]
+    if: needs.check.outputs.exists == 'false'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
