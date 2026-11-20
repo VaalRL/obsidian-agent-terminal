@@ -10,7 +10,7 @@ import { RuntimeResolver, NO_RUNTIME_MESSAGE } from '../services/RuntimeResolver
 import { NativeInstaller } from '../services/NativeInstaller';
 import { detectObsidianCli, currentCliHost, prependPath, MIN_CLI_VERSION } from '../services/ObsidianCli';
 import { ConfirmModal } from './ConfirmModal';
-import { attachClipboardShortcuts } from './ClipboardShortcuts';
+import { attachClipboardShortcuts, attachCopyOnSelect } from './ClipboardShortcuts';
 import { terminalThemeFrom } from './terminalTheme';
 
 export const TERMINAL_VIEW_TYPE = 'agent-terminal-view';
@@ -134,6 +134,8 @@ export class TerminalView extends ItemView {
         // 鍵盤複製/貼上 (各平台快捷鍵見 ClipboardShortcuts)
         const platform = Platform.isMacOS ? 'mac' : Platform.isWin ? 'windows' : 'linux';
         attachClipboardShortcuts(this.terminal, platform, navigator.clipboard);
+        // 選取即複製 (設定可關閉)；監聽器隨 terminal.dispose() 一起移除
+        attachCopyOnSelect(this.terminal, navigator.clipboard, () => this.settings.copyOnSelect);
 
         this.fitAddon = new FitAddon();
         this.terminal.loadAddon(this.fitAddon);

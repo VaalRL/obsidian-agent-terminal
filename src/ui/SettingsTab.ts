@@ -126,6 +126,7 @@ export class AgentTerminalSettingTab extends PluginSettingTab {
                 this.refreshDomState(); // 顯示或隱藏「Custom path」
                 return;
             case 'autoSyncCwd':
+            case 'copyOnSelect':
             case 'quickCommandsFromVaultRoot':
                 settings[key] = value === true;
                 await this.plugin.saveSettings();
@@ -239,6 +240,12 @@ export class AgentTerminalSettingTab extends PluginSettingTab {
                         ? 'Not available on Windows: the terminal cannot tell whether a program (such as an AI CLI) is running, so "cd" is never sent automatically. Use the "Locate to current file" button instead.'
                         : 'Automatically "cd" to the current note\'s folder when you switch notes. Only runs while the shell is waiting for a command, so it never types into running programs such as AI CLIs or vim.',
                     control: { type: 'toggle', key: 'autoSyncCwd' }
+                },
+                {
+                    name: 'Copy on select',
+                    desc: 'Copy text to the clipboard as soon as you select it with the mouse. '
+                        + 'Programs that capture the mouse, such as Claude Code, handle selection themselves.',
+                    control: { type: 'toggle', key: 'copyOnSelect' }
                 }
             ]
         };
