@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 
-import { getClipboardAction, attachClipboardShortcuts, ShortcutPlatform } from '../src/ui/ClipboardShortcuts';
+import { getClipboardAction, attachClipboardShortcuts, attachCopyOnSelect, ShortcutPlatform } from '../src/ui/ClipboardShortcuts';
+import { DEFAULT_SETTINGS, mergeSettings } from '../src/core/settings';
 
 type Keys = { ctrl?: boolean; shift?: boolean; alt?: boolean; meta?: boolean; type?: string };
 
@@ -132,5 +133,79 @@ describe('attachClipboardShortcuts', () => {
         await new Promise(r => setTimeout(r, 0));
 
         expect(terminal.paste).not.toHaveBeenCalled();
+    });
+});
+
+describe('attachCopyOnSelect', () => {
+    // xterm 只在選取完成 (放開滑鼠) 且有變化時觸發 onSelectionChange；清除選取也會觸發
+    function setup(enabled = true) {
+        let selection = '';
+        let onSelectionChange!: () => void;
+        const subscription = { dispose: vi.fn() };
+        const terminal = {
+            onSelectionChange: vi.fn((listener: () => void) => { onSelectionChange = listener; return subscription; }),
+            hasSelection: vi.fn(() => selection !== ''),
+            getSelection: vi.fn(() => selection)
+        };
+        const clipboard = { writeText: vi.fn(async (_text: string) => {}) };
+        const options = { enabled };
+        const disposable = attachCopyOnSelect(terminal, clipboard, () => options.enabled);
+        const select = (text: string) => { selection = text; onSelectionChange(); };
+        return { clipboard, options, select, disposable, subscription };
+    }
+
+    it('copies the selection once it is made', () => {
+        const { clipboard, select } = setup();
+
+        select('npm run build');
+
+        expect(clipboard.writeText).toHaveBeenCalledTimes(1);
+        expect(clipboard.writeText).toHaveBeenCalledWith('npm run build');
+    });
+
+    it('does nothing when the selection is cleared', () => {
+        const { clipboard, select } = setup();
+
+        select('');
+
+        expect(clipboard.writeText).not.toHaveBeenCalled();
+    });
+
+    it('reads the setting on every selection, so turning it off takes effect immediately', () => {
+        const { clipboard, options, select } = setup();
+
+        options.enabled = false;
+        select('secret');
+        expect(clipboard.writeText).not.toHaveBeenCalled();
+
+        options.enabled = true;
+        select('ls');
+        expect(clipboard.writeText).toHaveBeenCalledWith('ls');
+    });
+
+    it('ignores clipboard write failures', async () => {
+        const { clipboard, select } = setup();
+        clipboard.writeText.mockRejectedValueOnce(new Error('denied'));
+
+        expect(() => select('ls')).not.toThrow();
+        await new Promise(r => setTimeout(r, 0));
+    });
+
+    it('returns the subscription so the listener can be removed', () => {
+        const { disposable, subscription } = setup();
+
+        expect(disposable).toBe(subscription);
+    });
+});
+
+describe('copyOnSelect setting', () => {
+    it('is on by default, including for settings saved by older versions', () => {
+        expect(DEFAULT_SETTINGS.copyOnSelect).toBe(true);
+        expect(mergeSettings({ shellPath: '/bin/zsh' }).copyOnSelect).toBe(true);
+    });
+
+    it('keeps a saved choice and ignores invalid values', () => {
+        expect(mergeSettings({ copyOnSelect: false }).copyOnSelect).toBe(false);
+        expect(mergeSettings({ copyOnSelect: 'no' }).copyOnSelect).toBe(true);
     });
 });

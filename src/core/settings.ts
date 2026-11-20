@@ -24,6 +24,8 @@ export interface AgentTerminalSettings {
     quickCommandsFromVaultRoot: boolean;
     // 按下 🤖 按鈕時直接送出的 quick command id；空字串表示按鈕改為顯示選單
     defaultQuickCommandId: string;
+    // 用滑鼠選取終端機文字後自動複製到剪貼簿
+    copyOnSelect: boolean;
 }
 
 export const DEFAULT_SETTINGS: AgentTerminalSettings = {
@@ -36,6 +38,7 @@ export const DEFAULT_SETTINGS: AgentTerminalSettings = {
         .flatMap(template => template.commands),
     quickCommandsFromVaultRoot: true,
     defaultQuickCommandId: '',
+    copyOnSelect: true,
 };
 
 function isQuickCommand(value: unknown): value is QuickCommand {
@@ -58,6 +61,7 @@ export function mergeSettings(saved: unknown): AgentTerminalSettings {
         ...DEFAULT_SETTINGS,
         ...data,
         quickCommands: quickCommands.map(q => ({ id: q.id, name: q.name, command: q.command })),
-        defaultQuickCommandId: typeof data.defaultQuickCommandId === 'string' ? data.defaultQuickCommandId : ''
+        defaultQuickCommandId: typeof data.defaultQuickCommandId === 'string' ? data.defaultQuickCommandId : '',
+        copyOnSelect: typeof data.copyOnSelect === 'boolean' ? data.copyOnSelect : DEFAULT_SETTINGS.copyOnSelect
     };
 }

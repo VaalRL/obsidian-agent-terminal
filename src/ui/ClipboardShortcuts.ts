@@ -1,4 +1,4 @@
-import type { Terminal } from 'xterm';
+import type { IDisposable, Terminal } from 'xterm';
 
 export type ShortcutPlatform = 'mac' | 'windows' | 'linux';
 
@@ -72,5 +72,26 @@ export function attachClipboardShortcuts(terminal: ShortcutTerminal, platform: S
             }
         }
         return false;
+    });
+}
+
+type CopyOnSelectTerminal = Pick<Terminal, 'onSelectionChange' | 'hasSelection' | 'getSelection'>;
+
+/**
+ * 選取即複製：用滑鼠選取文字 (拖曳、雙擊選字、三擊選行) 後自動複製到剪貼簿；選取保留，可再按 Ctrl+C / Cmd+C。
+ * - xterm 的 onSelectionChange 只在選取「完成且有變化」時觸發 (放開滑鼠時，拖曳過程中不會)，
+ *   所以每次選取只寫入剪貼簿一次，之後在 Obsidian 其他地方點擊也不會用舊選取覆蓋剪貼簿
+ * - 接管滑鼠的程式 (例如 Claude Code) 自己處理選取，xterm 沒有產生選取時這裡什麼都不做，因此不必依 agent 區分
+ * - 設定在每次選取時才讀取，切換設定立即生效
+ */
+export function attachCopyOnSelect(
+    terminal: CopyOnSelectTerminal,
+    clipboard: Pick<ClipboardLike, 'writeText'>,
+    isEnabled: () => boolean
+): IDisposable {
+    return terminal.onSelectionChange(() => {
+        if (!isEnabled() || !terminal.hasSelection()) return;
+        const selection = terminal.getSelection();
+        if (selection) void clipboard.writeText(selection).catch(() => { /* 剪貼簿權限被拒 */ });
     });
 }

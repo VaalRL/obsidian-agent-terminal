@@ -132,7 +132,7 @@ describe('AgentTerminalSettingTab (declarative settings)', () => {
         const { tab } = createTab();
         const items = definitions(tab);
 
-        for (const name of ['Shell', 'Default startup directory', 'Auto-sync directory', 'Start from the vault root',
+        for (const name of ['Shell', 'Default startup directory', 'Auto-sync directory', 'Copy on select', 'Start from the vault root',
             'Button action', 'Status', 'Buy me a coffee']) {
             expect(find(items, name)).toBeDefined();
         }
@@ -386,10 +386,12 @@ describe('AgentTerminalSettingTab (declarative settings)', () => {
             await tab.setControlValue('autoSyncCwd', true);
             await tab.setControlValue('quickCommandsFromVaultRoot', false);
             await tab.setControlValue('defaultQuickCommandId', 'claude');
+            await tab.setControlValue('copyOnSelect', false);
 
-            expect(plugin.settings).toMatchObject({ autoSyncCwd: true, quickCommandsFromVaultRoot: false, defaultQuickCommandId: 'claude' });
-            expect(plugin.saveSettings).toHaveBeenCalledTimes(3);
+            expect(plugin.settings).toMatchObject({ autoSyncCwd: true, quickCommandsFromVaultRoot: false, defaultQuickCommandId: 'claude', copyOnSelect: false });
+            expect(plugin.saveSettings).toHaveBeenCalledTimes(4);
             expect(tab.getControlValue('autoSyncCwd')).toBe(true);
+            expect(tab.getControlValue('copyOnSelect')).toBe(false);
         });
 
         it('should link the support page as a plain external link', () => {

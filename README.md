@@ -136,6 +136,8 @@ The plugin settings show whether the CLI is available (*Obsidian CLI for AI agen
 
   Without a selection, `Ctrl+C` interrupts the running command as usual. On Linux, `Ctrl+V` keeps its terminal meaning (for example block selection in vim).
 
+  **Copy on select** (on by default, *Settings → Copy on select*): selecting text with the mouse (drag, double-click a word, triple-click a line) copies it right away, for example in Antigravity CLI or the shell. Programs that capture the mouse, such as Claude Code, handle selection and copying themselves.
+
 ## Privacy and network use
 
 Obsidian installs only `main.js`, `manifest.json` and `styles.css` for a plugin. The terminal also needs **node-pty**, a small native module that differs per operating system, so:
